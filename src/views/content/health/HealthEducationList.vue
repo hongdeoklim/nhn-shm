@@ -1,0 +1,301 @@
+<template>
+  <div>
+
+    <search-nav @handleSearch="handleSearch">
+      <search-nav-item-date :label="$t('search.교육일')" v-model="nav.date" />
+      <search-nav-item-project :label="$t('search.현장명')" v-model="nav.projectId" />
+      <search-nav-item-keyword label="소속" v-model="nav.company" />
+    </search-nav>
+
+    <vs-row class="mb-4">
+      <vs-col class="flex" vs-justify="flex-end">
+        <vs-button class="mr-2" type="border" color="secondary" @click="excelDownFunc">{{$t('button.Excel 다운로드')}}</vs-button>
+      </vs-col>
+    </vs-row>
+
+    <vs-row>
+      <vs-col>
+        <vs-table stripe
+                  ref="table"
+                  :sst="true"
+                  :max-items="perPage"
+                  :data="table.list"
+
+                  noDataText="데이터가 없습니다."
+                  @sort="handleSort"
+                  @selected="handleItemClickDetailBlank"
+        >
+
+          <template slot="thead">
+            <vs-th sort-key="id" ><span class="w-full text-center">{{$t('content.health.education.list.column.No')}}</span></vs-th>
+            <vs-th sort-key="post_title" ><span class="w-full text-center">{{$t('content.health.education.list.column.현장명')}}</span></vs-th>
+            <vs-th sort-key="content$company" ><span class="w-full text-center">소속</span></vs-th>
+            <vs-th sort-key="content$hse_type_health" ><span class="w-full text-center">교육구분</span></vs-th>
+            <vs-th sort-key="content$preview.work" ><span class="w-full text-center">{{$t('content.health.education.list.column.교육명')}}</span></vs-th>
+            <vs-th sort-key="content$preview.target" ><span class="w-full text-center">{{$t('content.health.education.list.column.교육대상')}}</span></vs-th>
+            <vs-th sort-key="content$preview.date" ><span class="w-full text-center">{{$t('content.health.education.list.column.교육일')}}</span></vs-th>
+            <vs-th sort-key="content$preview.main_manager"><span class="w-full text-center">{{$t('content.health.education.list.column.교육담당')}}</span></vs-th>
+            <vs-th sort-key="content$preview.total"><span class="w-full text-center">{{$t('content.health.education.list.column.총인원')}}</span></vs-th>
+            <vs-th ><span class="w-full text-center">{{$t('content.health.education.list.column.첨부파일')}}</span></vs-th>
+            <vs-th ><vs-col vs-type="flex" vs-justify="center">{{$t('content.health.education.list.column.보기')}}</vs-col></vs-th>
+          </template>
+
+          <template slot-scope="{data}">
+            <vs-tr :data="tr" :key="indextr" v-for="(tr, indextr) in data">
+
+              <vs-td class="text-center">{{ getNo(indextr) }}</vs-td>
+              <vs-td class="text-center">{{ tr.post_title }}</vs-td>
+              <vs-td class="text-center">{{ getContent(tr).company }}</vs-td>
+              <vs-td class="text-center">{{ getHseTypeHealth(getContent(tr).hse_type_health) }}</vs-td>
+              <vs-td class="text-center">{{ getPreview(tr).work }}</vs-td>
+              <vs-td class="text-center">{{ getPreview(tr).target }}</vs-td>
+              <vs-td class="text-center">{{ getPreview(tr).date }}<br>{{ getPreview(tr).s_time.substr(0, 5) }} ~
+                {{ getPreview(tr).e_time.substr(0, 5) }}
+              </vs-td>
+              <vs-td class="text-center">{{
+                  getPreview(tr).main_manager
+                }}{{ getPreview(tr).sub_manager ? ' / ' + getPreview(tr).sub_manager : '' }}
+              </vs-td>
+              <vs-td class="text-center">{{ getPreview(tr).total }}</vs-td>
+              <vs-td class="text-center">
+                <a download target="_blank" :href="img.path" v-for="(img, index) in getPreview(tr).attach" :key="index" @click.stop>
+                  <vs-icon icon-pack="feather" icon="icon-file"/>
+                </a>
+              </vs-td>
+              <vs-td class="text-center">
+                <div class="flex justify-center">
+                  <vs-button type="border" icon="open_in_new" class="mr-1" @click.stop  @click="()=>{handleItemClickDetailBlank(tr)}"></vs-button>
+                  <vs-button type="border" @click.stop @click="()=>{handleItemClickDetail(tr)}">{{$t('button.바로가기')}}</vs-button>
+                </div>
+              </vs-td>
+
+
+            </vs-tr>
+          </template>
+        </vs-table>
+      </vs-col>
+    </vs-row>
+
+    <popup-excel-download
+      v-model="showExcelDownload"
+      :list="excelList"
+      title="안전교육"/>
+  </div>
+</template>
+
+<script>
+import SearchNav from '@/components/nav/SearchNav'
+import SearchNavItemDate from '@/components/nav/SearchNavItemDate'
+import SearchNavItemKeyword from '@/components/nav/SearchNavItemKeyword'
+import PopupExcelDownload from '@/popup/PopupExcelDownload'
+import SearchNavItemProject from '@/components/nav/SearchNavItemProject'
+
+export default {
+  name: 'HealthEducationList',
+  components: {
+    SearchNavItemProject,
+    PopupExcelDownload,
+    SearchNavItemKeyword,
+    SearchNavItemDate,
+    SearchNav
+  },
+  computed: {
+    excelList () {
+      const list = []
+      for (const data of this.listAll) {
+        list.push({
+          'No.': data.id,
+          '현장명': data.post_title,
+          '교육명': this.getPreview(data).work,
+          '교육대상': this.getPreview(data).target,
+          '교육담당': `${this.getPreview(data).main_manager} / ${this.getPreview(data).sub_manager ? ` / ${  this.getPreview(data).sub_manager}` : ''} `,
+          '교육일': `${this.getPreview(data).date}\n${this.getPreview(data).s_time.substr(0, 5)}~${ this.getPreview(data).e_time.substr(0, 5) }`,
+          '총인원': this.getPreview(data).total
+        })
+      }
+
+      return list
+    }
+  },
+  data () {
+    return {
+      // 검색 네비게이션
+      nav: {
+        projectId:'',
+        date: ['', ''],
+        keyword: '',
+        company: '',
+        orderTarget:'',
+        orderDirection: ''
+      },
+
+      // approvalLine
+      approvalLine: [],
+      showApprovalLinePopup: false,
+      showExcelDownload: false,
+      listAll: [],
+
+      currentPage: 1,
+      lastPage: 1,
+      perPage: 10,
+      total: 0,
+
+      rootPath: '', // 프로젝트의 rootPath
+      postId: '',
+      table: {
+        list: [],
+        keyword: ''
+      }
+    }
+  },
+
+  created () {
+    const paths = this.$route.path.split('/')
+    this.rootPath = `/${paths[1]}/${paths[2]}`
+
+    this.loadPostList()
+  },
+
+  methods: {
+    getNo (index) {
+      return this.total - (((this.currentPage - 1) * this.perPage) + index)
+    },
+    async loadPostList () {
+      const projectId = this.nav.projectId
+      const boardId = 35
+      const boardSlug = 'hse_management' // first_risk(id:6)
+      const page = this.currentPage
+      const perPage = this.perPage
+      const dateBegin = this.nav.date[0]
+      const dateEnd = this.nav.date[1]
+      const keyword = []
+      const dateTarget = 'content$preview.date'
+      const orderTarget = this.nav.orderTarget
+      const orderDirection = this.nav.orderDirection
+
+      keyword.push('content$preview.hse_type*health')
+      if (this.nav.keyword) keyword.push(this.nav.keyword)
+      if (this.nav.company) keyword.push(`content$company*%${this.nav.company}%`)
+
+
+      await this.$store.dispatch('board/LOAD_POST_LIST', {
+        projectId,
+        boardId,
+        page,
+        perPage,
+        keyword,
+        dateTarget, dateBegin, dateEnd,
+        orderTarget,
+        orderDirection
+      })
+
+      const postListInfo = this.$store.state.board.postListInfo
+      this.table.list = postListInfo.data
+      this.currentPage = postListInfo.current_page
+      this.lastPage = postListInfo.last_page
+      this.total = postListInfo.total
+
+    },
+
+    async loadPostListAll () {
+      const projectId = this.nav.projectId
+      const boardId = 35
+      const boardSlug = 'hse_management' // first_risk(id:6)
+      const page = 1
+      const perPage = 10000
+      const dateBegin = this.nav.date[0]
+      const dateEnd = this.nav.date[1]
+      const keyword = []
+      const dateTarget = 'content$preview.date'
+      const orderTarget = this.nav.orderTarget
+      const orderDirection = this.nav.orderDirection
+
+      keyword.push('content$preview.hse_type*health')
+      if (this.nav.keyword) keyword.push(this.nav.keyword)
+      if (this.nav.company) keyword.push(`content$company*%${this.nav.company}%`)
+
+      await this.$store.dispatch('board/LOAD_POST_LIST', {
+        projectId,
+        boardId,
+        page,
+        perPage,
+        keyword,
+        dateTarget, dateBegin, dateEnd,
+        orderTarget,
+        orderDirection
+      })
+
+      const postListInfo = this.$store.state.board.postListInfo
+      this.listAll = postListInfo.data
+      await this.loadPostList()
+    },
+
+    handleSearch () {
+      this.currentPage = 1
+      this.loadPostList()
+    },
+
+    getPreview (data) {
+      if (data.preview) {
+        const preview = JSON.parse(data.preview)
+        return preview
+      }
+    },
+    getContent (data) {
+      if (data.post_content) {
+        const content = JSON.parse(data.post_content)
+        return content
+      }
+    },
+    getHseTypeHealth (type) {
+      const selectSafetyList = {
+        'regular_health': '정기보건교육',
+        'hiring_health': '채용시 보건교육',
+        'changing_health': '작업내용 변경시 보건교육',
+        'special_health': '특별보건교육',
+        'supervisor_health': '관리감독자 보건교육',
+        'material_health': 'MSDS',
+        'etc_health': '기타(보건)',
+      }
+
+      return selectSafetyList[type]
+    },
+
+    async excelDownFunc () {
+      await this.loadPostListAll()
+      this.showExcelDownload = true
+    },
+
+    handleClickRegister () {
+      this.$emit('handleClickRegister', 'health')
+    },
+
+    handleItemClickDetail (data) {
+      this.$router.push({path: `/project/${data.project_id}/hse/list/health/${data.id}`})
+    },
+    handleItemClickDetailBlank (data) {
+      if (data) {
+        const routeData = this.$router.resolve(`/project/${data.project_id}/hse/list/health/${data.id}`)
+        window.open(routeData.href, '_blank')
+      }
+    },
+
+    handleSort (key, type) {
+      if (key) {
+        this.nav.orderTarget = key
+        this.nav.orderDirection = type
+        this.loadPostList()
+      }
+    },
+
+    handleChangePage (page) {
+      this.currentPage = page
+      this.loadPostList()
+    }
+  }
+}
+</script>
+
+<style scoped>
+
+</style>

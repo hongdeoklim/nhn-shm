@@ -1,0 +1,143 @@
+/*=========================================================================================
+  File Name: main.scss
+  Description: Main scss file. Imports other scss partials from 'vuexy' folder
+  ----------------------------------------------------------------------------------------
+  Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
+  Author: Pixinvent
+  Author URL: http://www.themeforest.net/user/pixinvent
+==========================================================================================*/
+
+@import "vuexy/variables";
+
+@import "vuexy/layout";
+@import "vuexy/typography";
+@import "vuexy/misc";
+@import "vuexy/extraComponents";
+@import "vuexy/themes";
+@import "vuexy/transitions";
+
+@import "vuexy/customClasses";
+
+// Vuesax fixes and enhancments
+@import "vuexy/fixesVuesax";
+
+// Tailwind Fixes
+@import "vuexy/tailwindFix";
+
+// rtl
+@import "vuexy/rtl";
+
+.vs-radio--input:checked + .vs-radio .vs-radio--borde {
+  background: white;
+  border: none !important;
+  transform: scale(0.375) !important;
+  opacity: 1 !important;
+  z-index: 10;
+}
+
+.writeGridContainer {
+  display: grid;
+  grid-template-columns: theme("gridTemplateColumns.none");
+  gap: theme("gap.4") theme("gap.6");
+  margin-bottom: theme("margin.5");
+
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    & > :first-child {
+      width: 114px;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    & > :nth-child(2) {
+      width: 0;
+      flex: 1;
+
+      &.text-simple {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  & > .writeGridLineItem {
+    align-items: start;
+    & > :first-child {
+      line-height: 38px;
+      &.fit-text {
+        line-height: 1.4rem;
+      }
+      &.textarea-label {
+        line-height: 1.5rem;
+        padding: 4px 0;
+      }
+    }
+  }
+
+  .after-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    & > :first-child {
+      flex: 1;
+    }
+  }
+
+  .radio {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 24px;
+  }
+
+  .time {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 6px;
+
+    & > :first-child {
+      width: 100%;
+    }
+    & > :nth-child(2) {
+    }
+    & > :last-child {
+      flex: 1;
+    }
+  }
+}
+
+@media print, screen and (min-width: theme("screens.xl")) {
+  .writeGridContainer {
+    grid-template-columns: theme("gridTemplateColumns.12");
+
+    & > div {
+      grid-column: span 4 / span 4;
+    }
+
+    & > .writeGridCol2 {
+      grid-column: span 8 / span 8;
+    }
+
+    & > .writeGridLineItem {
+      grid-column: span 12 / span 12;
+    }
+
+    .radio {
+      gap: 14px;
+    }
+
+    .time {
+      flex-wrap: nowrap;
+
+      & > :first-child {
+        flex: 1;
+        width: auto;
+      }
+    }
+  }
+}

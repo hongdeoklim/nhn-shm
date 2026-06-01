@@ -1,0 +1,36 @@
+.search-layout {
+  .search-base {
+    /*
+      gap 으로 컴포넌트 공백을 주려고 했으나,
+      EmptySpace (줄바꿈 컴포넌트) 사용시에 gap 으로 불필요한 여백이 생기는 문제가 있어서 패딩으로 처리함
+    */
+    padding: 0.5rem 0;
+  }
+}
+.search-container {
+  display: flex;
+  gap: 1rem;
+}
+
+.list-search-title {
+  font-weight: 500;
+  line-height: 38px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+
+
+@media (max-width: 1200px) {
+  .search-layout {
+    .search-base {
+      &:last-child {
+        padding-bottom: 0;
+      }
+    }
+  }
+
+  .search-container {
+    display: grid;
+  }
+}

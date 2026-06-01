@@ -1,0 +1,26 @@
+export default {
+  '_test_field_code': [{title: "테스트페이지"}],
+  'workplace-insider': [{title: "부서 현황"}, {title: "부서"}],
+  'workplace-subcontract': [{title: "사업 현황"}, {title: "도급·용역·위탁 사업"}],
+  'workplace-ordering': [{title: "현장 현황"}, {title: "현장 현황"}],
+  'facility': [{title: "사업장 현황"}, {title: "시설물"}],
+  'warehouse': [{title: "사업장 현황"}, {title: "창고"}],
+
+  'bridge': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "교량"}],
+  'retaining-wall': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "옹벽 및 절토사면"}],
+  'dike': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "제방"}],
+  'government-building': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "청사"}],
+  'complex-facility': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "복합시설"}],
+
+  'library': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "도서관"}],
+  'museum': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "박물관 및 미술관"}],
+  'medical': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "의료기관"}],
+  'daycare': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "어린이집"}],
+  'office': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "업무시설"}],
+  'indoor-auditorium': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "실내공연장"}],
+  'mixed-use-building': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "둘이상용도건축물"}],
+  'building': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "건축물"}],
+  'port': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "항만"}],
+  'tunnel': [{title: "중대시민재해 대상시설 현황"}, {title: "공중이용시설"}, {title: "터널"}],
+  'mass_feeding_facility': [{title: "중대시민재해 대상시설 현황"}, {title: "원료·제조물"}, {title: "집단급식소"}],
+}
