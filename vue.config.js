@@ -14,6 +14,15 @@ module.exports = {
   //assetsDir: "../../static/SPA",
   outputDir: path.resolve(__dirname, "../maot_client_dist/dist"),
   transpileDependencies: ["vue-echarts", "resize-detector"],
+  css: {
+    loaderOptions: {
+      sass: {
+        sassOptions: {
+          quietDeps: true
+        }
+      }
+    }
+  },
   configureWebpack: {
     optimization: {
       splitChunks: {
