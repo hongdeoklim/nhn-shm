@@ -3,7 +3,7 @@
     <input v-if="!readonly && !file.path" :id="id" type="file" @change="handleChangeFile" style="display: none;" accept="image/png, image/jpeg">
     <img v-if="file.path" :src="file.path" class="img"/>
     <div v-if="!file.path" class="content-upload">
-      <vs-image class="img-icon mb-2" :src="require('@/assets/images/_bs/Union.png')"/>
+      <vs-icon icon-pack="feather" icon="icon-image" style="font-size: 30px; margin-bottom: 8px;"></vs-icon>
       <p>이미지 업로드</p>
       <p>이미지를 드롭하거나 여기를 클릭하여 업로드하세요.</p>
     </div>
