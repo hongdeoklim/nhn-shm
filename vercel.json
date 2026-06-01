@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "http://35.188.180.75/api/$1"
+      "destination": "https://api.shm.nhnetworks.co.kr/api/$1"
     },
     {
       "source": "/(.*)",
