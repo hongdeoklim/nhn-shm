@@ -13,6 +13,7 @@ module.exports = {
   publicPath: "/",
   //assetsDir: "../../static/SPA",
   outputDir: path.resolve(__dirname, "../maot_client_dist/dist"),
+  productionSourceMap: false,
   lintOnSave: false,
   transpileDependencies: ["vue-echarts", "resize-detector"],
   css: {
