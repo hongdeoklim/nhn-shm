@@ -26,7 +26,7 @@
     "jsonwebtoken": "^8.5.1",
     "material-icons": "^0.3.1",
     "mobile-device-detect": "^0.4.3",
-    "moment": "moment/moment",
+    "moment": "^2.29.4",
     "perfect-scrollbar": "^1.4.0",
     "postcss-rtl": "^1.5.0",
     "prismjs": "^1.16.0",
@@ -75,7 +75,7 @@
     "vuejs-clipper": "^4.1.0",
     "vuejs-datepicker": "^1.5.4",
     "vuelidate": "^0.7.7",
-    "vuesax": "jd-0001/vuesax",
+    "vuesax": "jd-0001/vuesax#1d6c70c6e9813d50d01982733b828a63b712acb6",
     "vuex": "^3.1.1",
     "xlsx": "^0.15.0"
   },
