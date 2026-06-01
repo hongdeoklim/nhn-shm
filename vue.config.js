@@ -12,7 +12,7 @@ const path = require("path");
 module.exports = {
   publicPath: "/",
   //assetsDir: "../../static/SPA",
-  outputDir: path.resolve(__dirname, "../maot_client_dist/dist"),
+  outputDir: "dist",
   productionSourceMap: false,
   lintOnSave: false,
   transpileDependencies: ["vue-echarts", "resize-detector"],
