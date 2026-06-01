@@ -65,14 +65,21 @@ async function requireAuth (to, from, next) {
   // 나의 권한 가져오기 api 제작필요
 
   if (!isAuthenticated) {
-    await store.dispatch('REFRESH_TOKEN').catch(err => {
+    try {
+      await store.dispatch('REFRESH_TOKEN')
+      await store.dispatch('USER_INFO')
+      return true
+    } catch (err) {
       VueCookie.set('LOGIN_TO_FULLPATH', to.fullPath) // 로그인 후 이동할 페이지
       VueCookie.delete('token') // 현재 토큰 제거
       VueCookie.delete('current_id') // 현재 보고있는 게시물 넘버
-      return next('/login')
-    })
+      next('/login')
+      return false
+    }
+  } else {
+    await store.dispatch('USER_INFO')
+    return true
   }
-  await store.dispatch('USER_INFO')
 
 }
 
@@ -142,22 +149,21 @@ const router = new Router({
 })
 
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const checkAuthRequired = to.matched.some(function (routeInfo) { return routeInfo.meta.authRequired })
   const checkMobile = to.matched.some(function (routeInfo) { return routeInfo.meta.deviceRequired })
 
 
   // 로그인 여부
   if (checkAuthRequired) {
-    requireAuth(to, from, next)
+    const isAuth = await requireAuth(to, from, next)
+    if (isAuth) {
+      next()
+    }
+  } else {
+    next()
   }
 
-  // 모바일 여부
-  // if (checkMobile) {
-  //   requireMobile(to, from, next)
-  // }
-
-  next()
 })
 
 
