@@ -572,7 +572,7 @@ export default {
         dateBegin,
         dateEnd
       })
-      this.listAll = this.$store.state.board.postListInfo.data
+      this.listAll = this.$store.state.board.postListInfo.data || []
 
       for (const item of this.listAll) {
         const preview = this.getPreview(item)
@@ -631,7 +631,7 @@ export default {
         dateBegin,
         dateEnd
       })
-      this.listAll = this.$store.state.board.postListInfo.data
+      this.listAll = this.$store.state.board.postListInfo.data || []
 
       const _temp_values = []//{ com_name:'', values:[] }
       for (const item of this.listAll) {
