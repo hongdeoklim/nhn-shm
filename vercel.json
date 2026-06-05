@@ -7,6 +7,10 @@
       "destination": "https://api.shm.nhnetworks.co.kr/api/$1"
     },
     {
+      "source": "/storage/(.*)",
+      "destination": "https://api.shm.nhnetworks.co.kr/storage/$1"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
