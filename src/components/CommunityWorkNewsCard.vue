@@ -112,9 +112,9 @@ export default {
       // 보여지는 게시물 리스트
       const list = postListInfo.data;
       const newList = [];
-      for (const item of list) {
+      for (const item of (list || [])) {
         newList.push(item);
-        if (item.children.length > 0) {
+        if (item.children && item.children.length > 0) {
           for (const subItem of item.children) {
             newList.push(subItem);
           }
