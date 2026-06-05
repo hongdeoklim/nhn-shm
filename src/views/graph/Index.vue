@@ -1228,11 +1228,11 @@ export default {
       const list = []
       const obj = {}
 
-      for (const data of data1) {
+      for (const data of (data1 || [])) {
         if (!obj[data.label]) obj[data.label] = 0
         obj[data.label] += data.value
       }
-      for (const data of data2) {
+      for (const data of (data2 || [])) {
         if (!obj[data.label]) obj[data.label] = 0
         obj[data.label] += data.value
       }
@@ -1247,14 +1247,14 @@ export default {
       const list = []
       const obj = {}
 
-      for (const data of data1) {
+      for (const data of (data1 || [])) {
         if (!obj[data.label]) obj[data.label] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         let i = 0
         for (i = 0; i < 12; i++) {
           obj[data.label][i] += data.value[i]
         }
       }
-      for (const data of data2) {
+      for (const data of (data2 || [])) {
         if (!obj[data.label]) obj[data.label] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         let i = 0
         for (i = 0; i < 12; i++) {

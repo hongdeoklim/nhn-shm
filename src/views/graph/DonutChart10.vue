@@ -60,7 +60,7 @@ export default {
       const dataList = await CircleGraphUtil.loadGraphPieces(this.$store, projectIds, boardIds, summaryKey, dataType)
 
       let value = {}
-      for (const data of dataList) {
+      for (const data of (dataList || [])) {
         value = CircleGraphUtil.combineCircleGraphData(value, data)
       }
       this.data = CircleGraphUtil.circleModuleWithData(value)
