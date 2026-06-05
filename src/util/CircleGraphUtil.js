@@ -36,7 +36,6 @@ class CircleGraphUtil {
     return circleModule
   }
 
-  // summary api 에서 반환되는 데이터를 그래프를 그리기 위해 필요한 JSON 형태로 변경하여 반환한다. (파트너사 명)
   static getCompanyFromEachCompany = (value, summaryKey) => {
     value = CircleGraphUtil.normalizeSummaryResponse(value)
     const year = new Date().getFullYear()
@@ -47,8 +46,14 @@ class CircleGraphUtil {
         data[key] = 0;
       }
       try {
-        const colData = value.eachCompany[key][summaryKey[0]][year][summaryKey[1]]
-        const colNames = Object.keys(value.eachCompany[key][summaryKey[0]][year][summaryKey[1]])
+        const compData = value.eachCompany[key];
+        if (!compData || !compData[summaryKey[0]]) continue;
+        
+        const yearData = compData[summaryKey[0]][year];
+        if (!yearData || !yearData[summaryKey[1]]) continue;
+        
+        const colData = yearData[summaryKey[1]];
+        const colNames = Object.keys(colData);
         for (const col of colNames) {
           data[key] += Number(`${colData[col]}`)
         }
@@ -70,8 +75,14 @@ class CircleGraphUtil {
 
       for (let year = fromYear; year <= toYear; year++) {
         try {
-          const colData = value.eachCompany[key][summaryKey[0]][year][summaryKey[1]]
-          const colNames = Object.keys(value.eachCompany[key][summaryKey[0]][year][summaryKey[1]])
+          const compData = value.eachCompany[key];
+          if (!compData || !compData[summaryKey[0]]) continue;
+          
+          const yearData = compData[summaryKey[0]][year];
+          if (!yearData || !yearData[summaryKey[1]]) continue;
+          
+          const colData = yearData[summaryKey[1]];
+          const colNames = Object.keys(colData);
           for (const col of colNames) {
             data[key] += Number(`${colData[col]}`)
           }
@@ -113,8 +124,14 @@ class CircleGraphUtil {
       for (const comName of comNames) {
 
         try {
-          const colData = value.eachCompany[comName][summaryKey[0]][year][summaryKey[1]]
-          const colNames = Object.keys(value.eachCompany[comName][summaryKey[0]][year][summaryKey[1]])
+          const compData = value.eachCompany[comName];
+          if (!compData || !compData[summaryKey[0]]) continue;
+          
+          const yearData = compData[summaryKey[0]][year];
+          if (!yearData || !yearData[summaryKey[1]]) continue;
+          
+          const colData = yearData[summaryKey[1]];
+          const colNames = Object.keys(colData);
           for (const col of colNames) {
             if (!data[col]) data[col] = 0
             data[col] += Number(`${colData[col]}`)
@@ -138,8 +155,14 @@ class CircleGraphUtil {
 
         for (let year = fromYear; year <= toYear; year++) {
           try {
-            const colData = value.eachCompany[comName][summaryKey[0]][year][summaryKey[1]]
-            const colNames = Object.keys(value.eachCompany[comName][summaryKey[0]][year][summaryKey[1]])
+            const compData = value.eachCompany[comName];
+            if (!compData || !compData[summaryKey[0]]) continue;
+            
+            const yearData = compData[summaryKey[0]][year];
+            if (!yearData || !yearData[summaryKey[1]]) continue;
+            
+            const colData = yearData[summaryKey[1]];
+            const colNames = Object.keys(colData);
             for (const col of colNames) {
               if (!data[col]) data[col] = 0
               data[col] += Number(`${colData[col]}`)
@@ -163,7 +186,13 @@ class CircleGraphUtil {
         data[proj] = 0;
       }
       try {
-        const colData = value.eachProject[proj][summaryKey[0]][year][summaryKey[1]]
+        const projData = value.eachProject[proj];
+        if (!projData || !projData[summaryKey[0]]) continue;
+        
+        const yearData = projData[summaryKey[0]][year];
+        if (!yearData || !yearData[summaryKey[1]]) continue;
+        
+        const colData = yearData[summaryKey[1]];
         const colNames = Object.keys(colData)
         for (const col of colNames) {
           data[proj] += Number(`${colData[col]}`)
