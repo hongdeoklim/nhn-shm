@@ -3,16 +3,22 @@ import GraphUtil from '@/util/GraphUtil'
 class CircleGraphUtil {
 
   static normalizeSummaryResponse = (value) => {
-    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    if (!value || typeof value !== 'object') {
       return { eachProject: {}, eachCompany: {} }
     }
+    
+    // value가 배열이거나 특정 boardId의 응답일 경우 대응
+    let target = value;
+    if (Array.isArray(value)) {
+      return { eachProject: {}, eachCompany: {} }
+    }
+    
     return {
-      ...value,
-      eachProject: value.eachProject && typeof value.eachProject === 'object' && !Array.isArray(value.eachProject)
-        ? value.eachProject
+      eachProject: target.eachProject && typeof target.eachProject === 'object' && !Array.isArray(target.eachProject)
+        ? target.eachProject
         : {},
-      eachCompany: value.eachCompany && typeof value.eachCompany === 'object' && !Array.isArray(value.eachCompany)
-        ? value.eachCompany
+      eachCompany: target.eachCompany && typeof target.eachCompany === 'object' && !Array.isArray(target.eachCompany)
+        ? target.eachCompany
         : {},
     }
   }
@@ -181,8 +187,14 @@ class CircleGraphUtil {
 
       for (let year = fromYear; year <= toYear; year++) {
         try {
-          const colData = value.eachProject[proj][summaryKey[0]][year][summaryKey[1]]
-          const colNames = Object.keys(colData)
+          const projData = value.eachProject[proj];
+          if (!projData || !projData[summaryKey[0]]) continue;
+          
+          const yearData = projData[summaryKey[0]][year];
+          if (!yearData || !yearData[summaryKey[1]]) continue;
+          
+          const colData = yearData[summaryKey[1]];
+          const colNames = Object.keys(colData);
           for (const col of colNames) {
             data[proj] += Number(`${colData[col]}`)
           }
