@@ -1193,13 +1193,15 @@ export default {
 
         await this.$store.dispatch('summary/LOAD_SUMMARY_GROUP_ITEMS', option)
         const summary = this.$store.state.summary.summaryItems
+        if (!summary || !summary[type] || !summary[type].items) return data
         const items = Object.keys(summary[type].items)
         if (graphNum === 4) {
           const itemObj = {}
           for (const item of items) {
             if (!itemObj[item]) itemObj[item] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            for (let i = 0; i < summary[type].monthly.length; i++) {
-              const month = summary[type].monthly[i]
+            const monthlyList = summary[type].monthly || []
+            for (let i = 0; i < monthlyList.length; i++) {
+              const month = monthlyList[i]
               if (!month[item]) month[item] = 0
               itemObj[item][i] += month[item]
             }
