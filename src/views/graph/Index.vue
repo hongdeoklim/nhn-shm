@@ -883,42 +883,45 @@ export default {
         const summary = this.$store.state.summary.summaryMonthly
         if (graphNum === 1) {
           if (this.projectId && this.myLv >= 4) {
-            if (summary[type].child[this.companyInfo.com_name]) {
-              data.push(...summary[type].child[this.companyInfo.com_name].monthly.map(value => {
-                return value
-              }))
+            if (summary && summary[type] && summary[type].child && summary[type].child[this.companyInfo.com_name]) {
+              const monthly = summary[type].child[this.companyInfo.com_name].monthly
+              if (monthly && monthly.length > 0) data.push(...monthly.map(value => value))
             }
           } else {
-            data.push(...summary[type].monthly.map(value => {
-              return value
-            }))
+            if (summary && summary[type] && summary[type].monthly) {
+              data.push(...summary[type].monthly.map(value => value))
+            }
           }
         } else if (graphNum === 2) {
           let summaryMonthly
           if (this.projectId && this.myLv >= 4) summaryMonthly = this.convertSummaryMonthlyToGraph2(summary, this.companyInfo.com_name)[type]
           else summaryMonthly = this.convertSummaryMonthlyToGraph2(summary)[type]
-          data.push(...summaryMonthly)
+          if (summaryMonthly && summaryMonthly.length > 0) data.push(...summaryMonthly)
         } else if (graphNum === 3) {
           let summaryConvertSum
           if (this.projectId && this.myLv >= 4) summaryConvertSum = this.convertSummaryMonthlyToGraphData(summary, this.companyInfo.com_name)[type]
           else summaryConvertSum = this.convertSummaryMonthlyToGraphData(summary)[type]
-          summaryConvertSum.sort(function (a, b) { return b.value - a.value })
-          const max = summaryConvertSum.length
-          for (let i = 0; i < Math.min(summaryConvertSum.length, max); i++) {
-            data.push(summaryConvertSum[i])
+          if (summaryConvertSum && summaryConvertSum.length > 0) {
+            summaryConvertSum.sort(function (a, b) { return b.value - a.value })
+            const max = summaryConvertSum.length
+            for (let i = 0; i < Math.min(summaryConvertSum.length, max); i++) {
+              data.push(summaryConvertSum[i])
+            }
           }
         } else {
           let summaryConvertSum
           if (this.projectId && this.myLv >= 4) summaryConvertSum = this.convertSummaryMonthlyToGraphData(summary, this.companyInfo.com_name)[type]
           else summaryConvertSum = this.convertSummaryMonthlyToGraphData(summary)[type]
 
-          summaryConvertSum.sort(function (a, b) {
-            return b.value - a.value
-          })
+          if (summaryConvertSum && summaryConvertSum.length > 0) {
+            summaryConvertSum.sort(function (a, b) {
+              return b.value - a.value
+            })
 
-          const max = summaryConvertSum.length
-          for (let i = 0; i < Math.min(summaryConvertSum.length, max); i++) {
-            data.push(summaryConvertSum[i])
+            const max = summaryConvertSum.length
+            for (let i = 0; i < Math.min(summaryConvertSum.length, max); i++) {
+              data.push(summaryConvertSum[i])
+            }
           }
         }
 
