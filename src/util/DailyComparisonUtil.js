@@ -3,6 +3,7 @@ import GraphUtil from '@/util/GraphUtil'
 class DailyComparisonUtil {
   static moduleWithData = (value) => {
     const module = []
+    if (!value) return module;
     for (const comName of Object.keys(value)) {
       module.push({
         label: comName,
@@ -15,6 +16,7 @@ class DailyComparisonUtil {
 
   static getProjectFromEachProject = (value, summaryKey) => {
     const data = {}
+    if (!value || !value.eachProject) return data;
     const projects = Object.keys(value.eachProject)
     for (const proj of projects) {
       if (!data[proj]) {
@@ -39,6 +41,7 @@ class DailyComparisonUtil {
 
   static getCompanyFromEachCompany = (value, summaryKey) => {
     const data = {}
+    if (!value || !value.eachCompany) return data;
     const comNames = Object.keys(value.eachCompany)
     for (const comName of comNames) {
       if (!data[comName]) {
@@ -63,6 +66,7 @@ class DailyComparisonUtil {
 
   static getColumnFromEachCompany = (value, summaryKey) => {
     const data = {}
+    if (!value || !value.eachCompany) return data;
     const comNames = Object.keys(value.eachCompany)
     if (comNames.length > 0) {
       for (const comName of comNames) {
@@ -91,13 +95,13 @@ class DailyComparisonUtil {
 
   static sumValueFromEachCompany = (data1, data2) => {
     const data = {}
-    for (const key of Object.keys(data1)) {
+    for (const key of Object.keys(data1 || {})) {
       if (!data[key]) {
         data[key] = 0
       }
       data[key] += Number(`${data1[key]}`)
     }
-    for (const key of Object.keys(data2)) {
+    for (const key of Object.keys(data2 || {})) {
       if (!data[key]) {
         data[key] = 0
       }

@@ -3,6 +3,7 @@ import GraphUtil from '@/util/GraphUtil'
 class MonthlyComparisonUtil {
   static moduleWithData = (value) => {
     const module = []
+    if (!value) return module;
     for (const comName of Object.keys(value)) {
       module.push({
         name: comName,
@@ -21,6 +22,7 @@ class MonthlyComparisonUtil {
 
   static getProjectFromEachProject = (value, year, month, summaryKey) => {
     const data = {}
+    if (!value || !value.eachProject) return data;
     const projects = Object.keys(value.eachProject)
     for (const proj of projects) {
       if (!data[proj]) {
@@ -50,6 +52,7 @@ class MonthlyComparisonUtil {
 
   static getCompanyFromEachCompany = (value, year, month, summaryKey) => {
     const data = {}
+    if (!value || !value.eachCompany) return data;
     const comNames = Object.keys(value.eachCompany)
     for (const comName of comNames) {
       if (!data[comName]) {
@@ -79,6 +82,7 @@ class MonthlyComparisonUtil {
 
   static getColumnFromEachCompany = (value, year, month, summaryKey) => {
     const data = {}
+    if (!value || !value.eachCompany) return data;
     const comNames = Object.keys(value.eachCompany)
     if (comNames.length > 0) {
       for (const comName of comNames) {
@@ -118,7 +122,7 @@ class MonthlyComparisonUtil {
 
   static sumValueFromEachCompany = (data1, data2) => {
     const data = {}
-    for (const key of Object.keys(data1)) {
+    for (const key of Object.keys(data1 || {})) {
       if (!data[key]) {
         data[key] = {
           value: 0,
@@ -128,7 +132,7 @@ class MonthlyComparisonUtil {
       data[key].value += Number(`${data1[key].value}`)
       data[key].gap += Number(`${data1[key].gap}`)
     }
-    for (const key of Object.keys(data2)) {
+    for (const key of Object.keys(data2 || {})) {
       if (!data[key]) {
         data[key] = {
           value: 0,
