@@ -2,6 +2,21 @@ import GraphUtil from '@/util/GraphUtil'
 
 class CircleGraphUtil {
 
+  static normalizeSummaryResponse = (value) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return { eachProject: {}, eachCompany: {} }
+    }
+    return {
+      ...value,
+      eachProject: value.eachProject && typeof value.eachProject === 'object' && !Array.isArray(value.eachProject)
+        ? value.eachProject
+        : {},
+      eachCompany: value.eachCompany && typeof value.eachCompany === 'object' && !Array.isArray(value.eachCompany)
+        ? value.eachCompany
+        : {},
+    }
+  }
+
   static circleModuleWithData = (value) => {
     const circleModule = []
     for (const comName of Object.keys(value)) {
@@ -17,6 +32,7 @@ class CircleGraphUtil {
 
   // summary api 에서 반환되는 데이터를 그래프를 그리기 위해 필요한 JSON 형태로 변경하여 반환한다. (파트너사 명)
   static getCompanyFromEachCompany = (value, summaryKey) => {
+    value = CircleGraphUtil.normalizeSummaryResponse(value)
     const year = new Date().getFullYear()
     const data = {}
     const keys = Object.keys(value.eachCompany)
@@ -36,6 +52,7 @@ class CircleGraphUtil {
   }
 
   static getCompanyFromEachCompanyAllYear = (value, summaryKey) => {
+    value = CircleGraphUtil.normalizeSummaryResponse(value)
     const fromYear = 2020;
     const toYear = new Date().getFullYear()
     const data = {}
@@ -60,8 +77,8 @@ class CircleGraphUtil {
 
   static combineCircleGraphData = (data1, data2) => {
     const data = {}
-    const keyList1 = Object.keys(data1)
-    const keyList2 = Object.keys(data2)
+    const keyList1 = Object.keys(data1 || {})
+    const keyList2 = Object.keys(data2 || {})
     if (keyList1 && keyList1.length > 0) {
       for (const key of keyList1) {
         data[key] = data1[key]
@@ -81,6 +98,7 @@ class CircleGraphUtil {
 
   // summary api 에서 반환되는 데이터를 그래프를 그리기 위해 필요한 JSON 형태로 변경하여 반환한다.
   static getColumnFromEachCompany = (value, summaryKey) => {
+    value = CircleGraphUtil.normalizeSummaryResponse(value)
     const year = new Date().getFullYear()
     const data = {}
     const comNames = Object.keys(value.eachCompany)
@@ -103,6 +121,7 @@ class CircleGraphUtil {
   }
 
   static getColumnFromEachCompanyAllYear = (value, summaryKey) => {
+    value = CircleGraphUtil.normalizeSummaryResponse(value)
     const fromYear = 2020;
     const toYear = new Date().getFullYear()
     const data = {}
@@ -129,6 +148,7 @@ class CircleGraphUtil {
 
   // summary api 에서 반환되는 데이터를 그래프를 그리기 위해 필요한 JSON 형태로 변경하여 반환한다. (파트너사 명)
   static getProjectFromEachProject = (value, summaryKey) => {
+    value = CircleGraphUtil.normalizeSummaryResponse(value)
     const year = new Date().getFullYear()
     const data = {}
     const projects = Object.keys(value.eachProject)
@@ -148,9 +168,11 @@ class CircleGraphUtil {
   }
 
   static getProjectFromEachProjectAllYear = (value, summaryKey) => {
+    value = CircleGraphUtil.normalizeSummaryResponse(value)
     const fromYear = 2020;
     const toYear = new Date().getFullYear()
     const data = {}
+    if (!value || !value.eachProject) return data
     const projects = Object.keys(value.eachProject)
     for (const proj of projects) {
       if (!data[proj]) {
@@ -177,13 +199,15 @@ class CircleGraphUtil {
       excludeCompanyIds,
     }).then(value => {
       const dataList = []
-      for (const boardId of boardIds) {
+      const boardIdList = Array.isArray(boardIds) ? boardIds : []
+      for (const boardId of boardIdList) {
+        const boardSummary = CircleGraphUtil.normalizeSummaryResponse(value && value[boardId])
         if (dataType === 'project') {
-          dataList.push(CircleGraphUtil.getProjectFromEachProject(value[boardId], summaryKey))
+          dataList.push(CircleGraphUtil.getProjectFromEachProject(boardSummary, summaryKey))
         } else if (dataType === 'company') {
-          dataList.push(CircleGraphUtil.getCompanyFromEachCompany(value[boardId], summaryKey))
+          dataList.push(CircleGraphUtil.getCompanyFromEachCompany(boardSummary, summaryKey))
         } else {
-          dataList.push(CircleGraphUtil.getColumnFromEachCompany(value[boardId], summaryKey))
+          dataList.push(CircleGraphUtil.getColumnFromEachCompany(boardSummary, summaryKey))
         }
       }
 

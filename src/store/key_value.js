@@ -4,6 +4,12 @@ const KEY_HOME_NOTIFICATION = 'home_notification'
 const KEY_PEOPLE_OPTION = 'people_option'
 const KEY_EQUIPMENT_OPTION = 'equipment_option'
 
+function safeJsonParse (value, fallback = {}) {
+  if (!value) return fallback
+  if (typeof value === 'object') return value
+  try { return JSON.parse(value) } catch (e) { return fallback }
+}
+
 export default {
   namespaced: true,
   state: {
@@ -13,13 +19,13 @@ export default {
   },
   mutations: {
     LOAD_HOME_NOTIFICATION (state, data) {
-      state.homeNotification = JSON.parse(data.config)
+      state.homeNotification = data ? safeJsonParse(data.config) : {}
     },
     LOAD_PEOPLE_OPTION (state, data) {
-      state.peopleOption = JSON.parse(data.config)
+      state.peopleOption = data ? safeJsonParse(data.config) : {}
     },
     LOAD_EQUIPMENT_OPTION (state, data) {
-      state.equipmentOption = JSON.parse(data.config)
+      state.equipmentOption = data ? safeJsonParse(data.config) : {}
     }
   },
   actions: {
