@@ -56,10 +56,18 @@ module.exports = {
       },
     },
   },
-  // devServer: {
-  //   overlay: {
-  //     warnings: true,
-  //     errors: true
-  //   }
-  // }
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'https://api.shm.nhnetworks.co.kr',
+        changeOrigin: true,
+        secure: true,
+      },
+      '/storage': {
+        target: 'https://api.shm.nhnetworks.co.kr',
+        changeOrigin: true,
+        secure: true,
+      },
+    },
+  },
 };

@@ -12,6 +12,7 @@ import FileDownload from "@/components/FileDownload.vue";
 import FileUploadModule from "@/views/modules/FileUploadModule";
 import FieldSelectModule from "@/views/modules/FieldSelectModule";
 import PhotoUploadGridModule from "@/views/modules/PhotoUploadGridModule";
+import config from "../../../../../public/config";
 
 export default {
   components: {
@@ -72,13 +73,15 @@ export default {
     this.init();
   },
   data() {
+    const storageBaseUrl = config.BASE_API_URL || 'https://api.shm.nhnetworks.co.kr';
+    const sampleImage = `${storageBaseUrl}/storage/app/uploads/public/63b/f77/67e/63bf7767ee62f379869344.png`;
     return {
       EnableSave: false,
       form: {
         photoList: [
           {
-            path: "https://nhsafe.maot.co.kr:8080/storage/app/uploads/public/63b/f77/67e/63bf7767ee62f379869344.png",
-            thumb: "https://nhsafe.maot.co.kr:8080/storage/app/uploads/public/63b/f77/67e/63bf7767ee62f379869344.png",
+            path: sampleImage,
+            thumb: sampleImage,
           },
         ],
         fileList: [],

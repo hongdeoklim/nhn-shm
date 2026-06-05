@@ -1,17 +1,24 @@
 <template>
 <div class="relative p-10" style="width:1123px; height: 1587px;">
-  <img src="https://nhsafe.maot.co.kr:8080/storage/app/media/%EB%86%8D%ED%98%91_%EB%B3%B8%EC%82%AC_%EA%B2%BD%EC%98%81%EB%B0%A9%EC%B9%A8.jpg" class="w-full" alt="bg">
+  <img :src="`${baseUrl}/storage/app/media/%EB%86%8D%ED%98%91_%EB%B3%B8%EC%82%AC_%EA%B2%BD%EC%98%81%EB%B0%A9%EC%B9%A8.jpg`" class="w-full" alt="bg">
 
 </div>
 </template>
 
 <script>
+import config from "../../../../../public/config";
+
 export default {
   name: 'Print',
   props: {
     board: Object,
     form: Object,
-  }
+  },
+  computed: {
+    baseUrl() {
+      return config.BASE_API_URL || 'https://api.shm.nhnetworks.co.kr';
+    },
+  },
 }
 </script>
 

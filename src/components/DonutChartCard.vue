@@ -61,7 +61,8 @@ export default {
     total () {
       let sum = 0
       try {
-        for (const data of this.value.filter((data) => !!data.label)) {
+        const chartData = Array.isArray(this.value) ? this.value : []
+        for (const data of chartData.filter((data) => !!data.label)) {
           const num = Number(`${data.value}`)
           if (!isNaN(num)) {
             sum += Number(`${data.value}`)
@@ -74,9 +75,10 @@ export default {
 
     realValue () {
       const maxLength = 5
+      const chartData = Array.isArray(this.value) ? this.value : []
 
-      if (this.value.length) {
-        const value = JSON.parse(JSON.stringify(this.value.filter((data) => !!data.label)))
+      if (chartData.length) {
+        const value = JSON.parse(JSON.stringify(chartData.filter((data) => !!data.label)))
         value.sort((a, b) => b.value - a.value)
         if (value.length > maxLength) {
           return value.slice(0, maxLength)

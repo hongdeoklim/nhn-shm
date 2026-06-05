@@ -96,6 +96,7 @@
 
 <script>
 import VueCookie from "vue-cookie";
+import config from "../../public/config";
 
 export default {
   props: {
@@ -181,7 +182,7 @@ export default {
     },
     async downloadFile(fileId, filename) {
       const token = VueCookie.get("token");
-      fetch(`https://nhsafe.maot.co.kr:8080/api/v1/board/${this.boardSlug}/download?fileId=${fileId}`, {
+      fetch(`${config.BASE_API_URL}/api/v1/board/${this.boardSlug}/download?fileId=${fileId}`, {
         headers: new Headers({
           Authorization: `Bearer ${token}`,
         }),

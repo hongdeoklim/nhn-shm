@@ -46,16 +46,20 @@ export default {
   },
   methods: {
     async loadGraph () {
-      const summaryKey = this.summaryKey
-      const data1 = await this.loadGraphPiece(this.boardIds[0], summaryKey)
-      const data2 = await this.loadGraphPiece(this.boardIds[1], summaryKey)
+      try {
+        const summaryKey = this.summaryKey
+        const data1 = await this.loadGraphPiece(this.boardIds[0], summaryKey)
+        const data2 = await this.loadGraphPiece(this.boardIds[1], summaryKey)
 
-      let value = data1
-      value = CircleGraphUtil.combineCircleGraphData(value, data2)
+        let value = data1
+        value = CircleGraphUtil.combineCircleGraphData(value, data2)
 
-      const newData = CircleGraphUtil.circleModuleWithData(value)
-      newData.sort((a, b) => b.value - a.value)
-      this.data = newData
+        const newData = CircleGraphUtil.circleModuleWithData(value)
+        newData.sort((a, b) => b.value - a.value)
+        this.data = newData.length ? newData : [{label: '데이터 없음', value: 0}]
+      } catch (err) {
+        this.data = [{label: '데이터 없음', value: 0}]
+      }
     },
     async loadGraphPiece (boardId, summaryKey) {
       const value = await this.$store.dispatch('summary/FIRA_LOAD_SUMMARY', {
@@ -64,18 +68,17 @@ export default {
         dateField: 'content$body.headerDate',
         beginAt: '2020-01-01 00:00:00',
         endAt: `${new Date().getFullYear()  }-12-31 23:59:59`,
-      }).then(value => {
-        console.log('loadGraphPiece1', this.dataType, value)
+      }).then(response => {
+        const summary = CircleGraphUtil.normalizeSummaryResponse(response)
         if (this.dataType === 'project') {
-          return CircleGraphUtil.getProjectFromEachProjectAllYear(value, summaryKey)
+          return CircleGraphUtil.getProjectFromEachProjectAllYear(summary, summaryKey)
         } else if (this.dataType === 'company') {
-          return CircleGraphUtil.getCompanyFromEachCompanyAllYear(value, summaryKey)
+          return CircleGraphUtil.getCompanyFromEachCompanyAllYear(summary, summaryKey)
         } else {
-          return CircleGraphUtil.getColumnFromEachCompanyAllYear(value, summaryKey)
+          return CircleGraphUtil.getColumnFromEachCompanyAllYear(summary, summaryKey)
         }
       })
-      console.log('loadGraphPiece', value)
-      return value
+      return value || {}
     },
     onClickDetail () {
       const projectId = this.$route.params.proj_id

@@ -83,19 +83,23 @@ export default {
     const _key = '/api/auth/me'
     const me = localStorage.getItem(_key)
     if (me) {
-      const data = JSON.parse(me)
-      const companyId = data.user.company_id
+      if (me.includes('$$$')) {
+        localStorage.removeItem(_key)
+      } else {
+        const data = JSON.parse(me)
+        const companyId = data.user.company_id
 
-      // 만약 state.companyInfo.id 값이 없거나 data.user.company_id 값과 다르다면 API를 호출한다
-      if (!state.companyInfo.id || `${state.companyInfo.id}` !== `${data.user.company_id}`) {
-        await HttpRequest.get(`/api/v1/company/${companyId}`).then(response => {
-          // mutations 메소드 호출
-          commit('COMPANY_INFO', response)
-        }).catch(() => {});
+        // 만약 state.companyInfo.id 값이 없거나 data.user.company_id 값과 다르다면 API를 호출한다
+        if (!state.companyInfo.id || `${state.companyInfo.id}` !== `${data.user.company_id}`) {
+          await HttpRequest.get(`/api/v1/company/${companyId}`).then(response => {
+            // mutations 메소드 호출
+            commit('COMPANY_INFO', response)
+          }).catch(() => {});
+        }
+
+        commit('USER_INFO', data)
+        return data
       }
-
-      commit('USER_INFO', data)
-      return data
     }
 
     return new Promise((resolve, reject) => {

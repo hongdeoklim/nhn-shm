@@ -58,7 +58,7 @@ class HttpRequest {
     });
   }
 
-  static none_token_put(url, param) {
+  static none_token_put(url, param, hideErrorAlert) {
     url = `${resourceHost}${url}`;
     return new Promise((resolve, reject) => {
       axios
@@ -177,11 +177,35 @@ class HttpRequest {
     }
   }
 
+  static getErrorMessage(response) {
+    const data = response && response.data;
+    if (typeof data === "string") return data;
+    if (data && data.error && data.error.message) return data.error.message;
+    return "오류가 발생했습니다";
+  }
+
   static async tooManyRequest(err, hideErrorAlert) {
     if (this.isErrorAlert) return;
     this.isErrorAlert = true;
 
-    if (err.response.status === 401) {
+    const response = err && err.response;
+    if (!response) {
+      if (!hideErrorAlert) {
+        const customAlert = new CustomEvent("customAlert", {
+          detail: {
+            title: "오류가 발생했습니다",
+            message:
+              (err && err.message) ||
+              "네트워크 오류가 발생했습니다. 연결 상태를 확인해주세요.",
+          },
+        });
+        window.dispatchEvent(customAlert);
+      }
+      this.isErrorAlert = false;
+      return;
+    }
+
+    if (response.status === 401) {
       const isProfileDropDown = document.getElementById("ProfileDropDown");
       if (!isProfileDropDown) this.isErrorAlert = false;
       else {
@@ -190,7 +214,7 @@ class HttpRequest {
 
         setTimeout(() => (this.isErrorAlert = false), 1000);
       }
-    } else if (err.response.status === 429) {
+    } else if (response.status === 429) {
       alert("짧은 시간동안 서버에 너무 많은 요청을 하였습니다. \n1분 뒤 다시 시도해주세요.");
       this.isErrorAlert = false;
     } else {
@@ -202,11 +226,9 @@ class HttpRequest {
       const isCheckAlertDialog = document.getElementById("checkAlertDialog");
       if (isCheckAlertDialog) return;
 
-      const errMessage = typeof err.response.data === "string"
-        ? err.response.data
-        : err.response.data.error.message
+      const errMessage = this.getErrorMessage(response);
 
-      if (err.response.status === 422) {
+      if (response.status === 422) {
         // 토큰 정보가 일치하지 않을 때
       } else if (errMessage === 'This user is not included in the project'
         || errMessage === '대상 프로젝트를 찾을 수 없습니다'
@@ -227,10 +249,7 @@ class HttpRequest {
         const customAlert = new CustomEvent("customAlert", {
           detail: {
             title: '오류가 발생했습니다',
-            message:
-              typeof err.response.data === "string"
-                ? err.response.data
-                : err.response.data.error.message,
+            message: this.getErrorMessage(response),
           },
         });
         window.dispatchEvent(customAlert);

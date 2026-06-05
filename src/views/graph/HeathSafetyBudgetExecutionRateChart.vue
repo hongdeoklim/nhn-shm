@@ -69,7 +69,7 @@ export default {
         // 데이터들을 파싱한다
         const keys = Object.keys(value);
         for (const key of keys) {
-          const items = value[key];
+          const items = Array.isArray(value[key]) ? value[key] : [];
 
           if (items.length) {
             for (const item of items) {
@@ -79,7 +79,7 @@ export default {
         }
 
         for (const key of keys) {
-          const items = value[key];
+          const items = Array.isArray(value[key]) ? value[key] : [];
 
           // 데이터가 있는 경우에만 데이터를 추출한다
           if (items.length > 0) {
